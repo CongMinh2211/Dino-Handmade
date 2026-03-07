@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ZaloIcon } from '../Icons/ZaloIcon';
+import logoImg from '../../img/logo.jpg';
 import './Header.css';
 
 const Header = () => {
@@ -31,7 +32,7 @@ const Header = () => {
     <header className={`header ${isScrolled ? 'header--scrolled' : ''}`}>
       <div className="header__inner container">
         <Link to="/" className="header__logo">
-          <span className="header__logo-icon">🧶</span>
+          <img src={logoImg} alt="Dino Handmade Logo" className="header__logo-img" />
           <span className="header__logo-text">Dino Handmade</span>
         </Link>
 

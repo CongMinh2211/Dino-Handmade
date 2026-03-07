@@ -38,8 +38,11 @@
   transform: scale(1.03);
 }
 
-.header__logo-icon {
-  font-size: 1.8rem;
+.header__logo-img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
   animation: float 3s ease infinite;
 }
 
