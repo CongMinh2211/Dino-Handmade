@@ -15,7 +15,8 @@ const productSchema = new mongoose.Schema({
 }, { 
   timestamps: true,
   toJSON: { virtuals: true },
-  toObject: { virtuals: true }
+  toObject: { virtuals: true },
+  suppressReservedKeyWarning: true
 });
 
 productSchema.virtual('id').get(function() {

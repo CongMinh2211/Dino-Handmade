@@ -54,6 +54,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🧶 Dino Handmade Server đang chạy tại cổng ${PORT}`);
 });
