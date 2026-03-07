@@ -1,0 +1,123 @@
+[
+  {
+    "id": "p1",
+    "name": "Gojo Satoru Amigurumi",
+    "description": "Nhân vật Gojo Satoru từ anime Jujutsu Kaisen được đan thủ công bằng len cotton cao cấp. Mỗi sản phẩm đều là tác phẩm độc nhất, được tạo ra với sự tỉ mỉ trong từng mũi kim.",
+    "price": 350000,
+    "category": "anime",
+    "image": "/uploads/products/gojo.jpg",
+    "size": "15cm",
+    "material": "Len cotton",
+    "tags": [
+      "jujutsu-kaisen",
+      "gojo",
+      "anime"
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isHot": true,
+    "hidden": false,
+    "createdAt": "2026-03-01T00:00:00.000Z"
+  },
+  {
+    "id": "p2",
+    "name": "Omen Valorant Chibi",
+    "description": "Nhân vật Omen từ game Valorant phong cách chibi dễ thương. Đan bằng len acrylic mềm mại, chi tiết tỉ mỉ từ mũ trùm đến đôi mắt xanh đặc trưng.",
+    "price": 300000,
+    "category": "game",
+    "image": "/uploads/products/omen.jpg",
+    "size": "12cm",
+    "material": "Len acrylic",
+    "tags": [
+      "valorant",
+      "omen",
+      "game"
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isHot": false,
+    "hidden": false,
+    "createdAt": "2026-03-02T00:00:00.000Z"
+  },
+  {
+    "id": "p3",
+    "name": "Chibi Anime Girl",
+    "description": "Cô gái anime phong cách chibi với tóc đen tím, đính hoa xinh xắn. Mỗi chi tiết hoa được móc riêng lẻ rồi khâu tay.",
+    "price": 280000,
+    "category": "anime",
+    "image": "/uploads/products/chibi-girl.jpg",
+    "size": "10cm",
+    "material": "Len cotton blend",
+    "tags": [
+      "anime",
+      "chibi",
+      "girl"
+    ],
+    "inStock": true,
+    "isNew": false,
+    "isHot": true,
+    "hidden": false,
+    "createdAt": "2026-02-28T00:00:00.000Z",
+    "updatedAt": "2026-03-07T14:05:41.481Z"
+  },
+  {
+    "id": "p4",
+    "name": "Cừu Bông Mini đeo Ba Lô",
+    "description": "Chú cừu nhỏ đeo ba lô cực kỳ dễ thương! Đan bằng len mềm xù kiểu boucle, tạo lớp lông cừu chân thực.",
+    "price": 250000,
+    "category": "gau-bong",
+    "image": "/uploads/products/baby-three.jpg",
+    "size": "14cm",
+    "material": "Len boucle",
+    "tags": [
+      "cừu",
+      "gấu bông",
+      "cute"
+    ],
+    "inStock": true,
+    "isNew": false,
+    "isHot": false,
+    "hidden": false,
+    "createdAt": "2026-02-25T00:00:00.000Z"
+  },
+  {
+    "id": "p5",
+    "name": "Gấu Bông Baby Three",
+    "description": "Gấu bông lớn phong cách Good Night với gương mặt ngộ nghĩnh dễ thương. Đan bằng len lông thú siêu mềm.",
+    "price": 400000,
+    "category": "gau-bong",
+    "image": "/uploads/products/baby-three.jpg",
+    "size": "25cm",
+    "material": "Len lông thú",
+    "tags": [
+      "gấu bông",
+      "baby three",
+      "plushie"
+    ],
+    "inStock": true,
+    "isNew": false,
+    "isHot": true,
+    "hidden": false,
+    "createdAt": "2026-02-20T00:00:00.000Z"
+  },
+  {
+    "id": "p6",
+    "name": "Móc Khóa Len Chibi",
+    "description": "Bộ sưu tập móc khóa len chibi đa dạng mẫu mã. Nhỏ gọn, bền đẹp, gắn được vào túi xách, chìa khóa hoặc balo.",
+    "price": 120000,
+    "category": "phu-kien",
+    "image": "/uploads/products/chibi-girl.jpg",
+    "size": "5-7cm",
+    "material": "Len cotton",
+    "tags": [
+      "móc khóa",
+      "phụ kiện",
+      "mini"
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isHot": false,
+    "hidden": false,
+    "createdAt": "2026-02-15T00:00:00.000Z"
+  }
+]
