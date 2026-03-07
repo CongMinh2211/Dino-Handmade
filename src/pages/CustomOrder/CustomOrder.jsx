@@ -192,7 +192,7 @@ const CustomOrder = () => {
               <h3>💰 Bảng giá tham khảo</h3>
               <div className="price-row">
                 <span>Móc khóa (S)</span>
-                <span className="price-val">80.000 - 150.000₫</span>
+                <span className="price-val">40.000 - 150.000₫</span>
               </div>
               <div className="price-row">
                 <span>Để bàn (M)</span>
