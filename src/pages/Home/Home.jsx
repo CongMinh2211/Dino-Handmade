@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { products as mockProducts, categories, feedbacks as mockFeedbacks, shopInfo, formatPrice } from '../../data/mockData';
+import API_URL from '../../api/config';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import './Home.css';
 
-const API = '/api';
+const API = `${API_URL}/api`;
 
 const Home = () => {
   const [products, setProducts] = useState([]);

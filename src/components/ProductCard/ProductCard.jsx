@@ -1,12 +1,17 @@
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../../data/mockData';
+import API_URL from '../../api/config';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
+  const imageUrl = product.image 
+    ? (product.image.startsWith('http') ? product.image : API_URL + product.image)
+    : '';
+
   return (
     <Link to={`/san-pham/${product.id}`} className="product-card card">
       <div className="product-card__image-wrapper">
-        <div className="product-card__image" style={{ backgroundImage: `url(${product.image})` }}>
+        <div className="product-card__image" style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : 'none' }}>
           {!product.image || product.image.includes('placeholder') ? (
             <span className="product-card__emoji">🧶</span>
           ) : null}

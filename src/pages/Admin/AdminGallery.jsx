@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import heic2any from 'heic2any';
+import API_URL from '../../api/config';
 import { DeleteIcon } from '../../components/Icons/DeleteIcon';
 
 const AdminGallery = () => {
@@ -14,13 +16,10 @@ const AdminGallery = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const token = localStorage.getItem('token');
-  const axiosConfig = {
-    headers: { Authorization: `Bearer ${token}` }
-  };
 
   const fetchImages = async () => {
     try {
-      const response = await fetch('/api/gallery');
+      const response = await fetch(`${API_URL}/api/gallery`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       setImages(data);
@@ -35,10 +34,35 @@ const AdminGallery = () => {
     fetchImages();
   }, []);
 
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setNewImage(e.target.files[0]);
+  const handleImageChange = async (e) => {
+    let file = e.target.files[0];
+    if (!file) return;
+
+    // Handle HEIC format conversion for Gallery
+    if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
+      try {
+        setIsSubmitting(true);
+        const convertedBlob = await heic2any({
+          blob: file,
+          toType: 'image/jpeg',
+          quality: 0.8
+        });
+        
+        const finalBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+        const convertedFile = new File([finalBlob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+          type: 'image/jpeg'
+        });
+        file = convertedFile;
+      } catch (err) {
+        console.error('❌ Lỗi chuyển đổi HEIC (Gallery):', err);
+        alert('Lỗi khi xử lý ảnh HEIC. Vui lòng thử lại.');
+        return;
+      } finally {
+        setIsSubmitting(false);
+      }
     }
+
+    setNewImage(file);
   };
 
   const handleSubmit = async (e) => {
@@ -56,7 +80,7 @@ const AdminGallery = () => {
     formData.append('image', newImage);
 
     try {
-      const response = await fetch('/api/gallery', {
+      const response = await fetch(`${API_URL}/api/gallery`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
@@ -89,7 +113,7 @@ const AdminGallery = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa ảnh này khỏi Góc Trưng Bày?')) {
       try {
-        const res = await fetch(`/api/gallery/${id}`, {
+        const res = await fetch(`${API_URL}/api/gallery/${id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -192,7 +216,7 @@ const AdminGallery = () => {
             }}>
               <div style={{ height: '200px', overflow: 'hidden' }}>
                 <img 
-                  src={`http://localhost:4000${img.image}`} 
+                  src={img.image.startsWith('http') ? img.image : `${API_URL}${img.image}`} 
                   alt={img.title} 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />

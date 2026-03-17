@@ -3,7 +3,10 @@ import { motion } from 'framer-motion';
 import { shopInfo } from '../../data/mockData';
 import { ZaloIcon } from '../../components/Icons/ZaloIcon';
 import { FacebookIcon } from '../../components/Icons/FacebookIcon';
+import API_URL from '../../api/config';
 import './CustomOrder.css';
+
+const API = `${API_URL}/api`;
 
 const CustomOrder = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +34,7 @@ const CustomOrder = () => {
     
     try {
       // 1. Lưu đơn hàng vào database
-      await fetch('/api/orders', {
+      await fetch(`${API}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

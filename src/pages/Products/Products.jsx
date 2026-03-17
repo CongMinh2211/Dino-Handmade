@@ -2,10 +2,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categories, formatPrice } from '../../data/mockData';
+import API_URL from '../../api/config';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import './Products.css';
 
-const API = '/api';
+const API = `${API_URL}/api`;
 
 const Products = () => {
   const [searchParams] = useSearchParams();

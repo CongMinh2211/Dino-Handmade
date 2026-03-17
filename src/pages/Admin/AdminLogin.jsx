@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../../api/config';
 import './Admin.css';
 
-const API = '/api';
+const API = `${API_URL}/api`;
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');

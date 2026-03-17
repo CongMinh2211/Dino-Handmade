@@ -4,9 +4,10 @@ import { motion } from 'framer-motion';
 import { formatPrice, shopInfo } from '../../data/mockData';
 import { ZaloIcon } from '../../components/Icons/ZaloIcon';
 import { FacebookIcon } from '../../components/Icons/FacebookIcon';
+import API_URL from '../../api/config';
 import './ProductDetail.css';
 
-const API = '/api';
+const API = `${API_URL}/api`;
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -60,7 +61,11 @@ const ProductDetail = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="product-detail__main-image" style={{ backgroundImage: product.image ? `url(${product.image})` : 'none' }}>
+            <div className="product-detail__main-image" style={{ 
+              backgroundImage: product.image 
+                ? `url(${product.image.startsWith('http') ? product.image : API_URL + product.image})` 
+                : 'none' 
+            }}>
               {!product.image && <span style={{ fontSize: '6rem', opacity: 0.3 }}>🧶</span>}
             </div>
           </motion.div>

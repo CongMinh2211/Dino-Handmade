@@ -15,8 +15,8 @@ const createCloudinaryUpload = (folder, maxFileSize = 5 * 1024 * 1024) => {
     cloudinary,
     params: {
       folder: `dino-handmade/${folder}`,
-      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
-      transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic'],
+      transformation: [{ quality: 'auto', fetch_format: 'webp' }],
     },
   });
 

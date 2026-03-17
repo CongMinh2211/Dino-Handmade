@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import AdminOrders from './AdminOrders';
 import AdminUsers from './AdminUsers';
 import AdminGallery from './AdminGallery';
+import API_URL from '../../api/config';
+import heic2any from 'heic2any';
 import './Admin.css';
 
-const API = '/api';
+const API = `${API_URL}/api`;
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('products'); // 'products', 'orders', 'users'
@@ -37,12 +39,36 @@ const AdminDashboard = () => {
     } catch (e) { console.error(e); }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+  const handleImageChange = async (e) => {
+    let file = e.target.files[0];
+    if (!file) return;
+
+    // Handle HEIC format conversion
+    if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
+      try {
+        setLoading(true);
+        const convertedBlob = await heic2any({
+          blob: file,
+          toType: 'image/jpeg',
+          quality: 0.8
+        });
+        
+        const finalBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+        const convertedFile = new File([finalBlob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+          type: 'image/jpeg'
+        });
+        file = convertedFile;
+      } catch (err) {
+        console.error('❌ Lỗi chuyển đổi HEIC:', err);
+        alert('Lỗi khi xử lý ảnh HEIC (iPhone). Vui lòng thử lại hoặc chọn ảnh khác.');
+        return;
+      } finally {
+        setLoading(false);
+      }
     }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const resetForm = () => {
@@ -296,7 +322,7 @@ const AdminDashboard = () => {
               {products.map((p) => (
                 <tr key={p.id} className={p.hidden ? 'admin-row--hidden' : ''}>
                   <td>
-                    <div className="admin-product-thumb" style={{ backgroundImage: p.image ? `url(${p.image})` : 'none' }}>
+                    <div className="admin-product-thumb" style={{ backgroundImage: p.image ? `url(${p.image.startsWith('http') ? p.image : API_URL + p.image})` : 'none' }}>
                       {!p.image && '🧶'}
                     </div>
                   </td>

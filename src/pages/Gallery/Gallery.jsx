@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_URL from '../../api/config';
 import './Gallery.css';
 
 const Gallery = () => {
@@ -9,7 +10,7 @@ const Gallery = () => {
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/gallery');
+        const response = await fetch(`${API_URL}/api/gallery`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setImages(data);
@@ -56,7 +57,7 @@ const Gallery = () => {
               className="gallery-item"
               onClick={() => openLightbox(img)}
             >
-              <img src={`http://localhost:4000${img.image}`} alt={img.title} loading="lazy" />
+              <img src={img.image.startsWith('http') ? img.image : `${API_URL}${img.image}`} alt={img.title} loading="lazy" />
               <div className="gallery-overlay">
                 <h3>{img.title}</h3>
                 {img.tags && img.tags.length > 0 && (
@@ -77,7 +78,7 @@ const Gallery = () => {
         <div className="gallery-lightbox" onClick={closeLightbox}>
           <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
             <button className="lightbox-close" onClick={closeLightbox}>&times;</button>
-            <img src={`http://localhost:4000${selectedImage.image}`} alt={selectedImage.title} />
+            <img src={selectedImage.image.startsWith('http') ? selectedImage.image : `${API_URL}${selectedImage.image}`} alt={selectedImage.title} />
             <div className="lightbox-info">
               <h2>{selectedImage.title}</h2>
               {selectedImage.description && <p>{selectedImage.description}</p>}
