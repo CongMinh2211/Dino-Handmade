@@ -1,28 +1,7 @@
 import express from 'express';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 import { Blog } from '../models/Blog.js';
 import { authMiddleware } from '../utils/auth.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const uploadsDir = path.join(__dirname, '..', 'uploads', 'blog');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `blog-${Date.now()}${ext}`);
-  }
-});
-
-const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
+import { uploadBlog } from '../utils/cloudinary.js';
 
 const router = express.Router();
 
@@ -37,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/blog - Admin
-router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+router.post('/', authMiddleware, uploadBlog.single('image'), async (req, res) => {
   try {
     const { title, content, excerpt } = req.body;
 
@@ -45,7 +24,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       title,
       content,
       excerpt,
-      image: req.file ? `/uploads/blog/${req.file.filename}` : '',
+      image: req.file ? req.file.path : '',
     });
 
     await newPost.save();
@@ -67,4 +46,3 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 });
 
 export default router;
-

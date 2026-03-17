@@ -1,38 +1,7 @@
 import express from 'express';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 import { Product } from '../models/Product.js';
 import { authMiddleware } from '../utils/auth.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Configure multer for image uploads
-const uploadsDir = path.join(__dirname, '..', 'uploads', 'products');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `product-${Date.now()}${ext}`);
-  }
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: (req, file, cb) => {
-    const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (allowed.includes(ext)) cb(null, true);
-    else cb(new Error('Chỉ hỗ trợ file ảnh: jpg, png, webp, gif'));
-  }
-});
+import { uploadProduct } from '../utils/cloudinary.js';
 
 const router = express.Router();
 
@@ -83,7 +52,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/products - Admin
-router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+router.post('/', authMiddleware, uploadProduct.single('image'), async (req, res) => {
   try {
     const { name, description, price, category, size, material, tags, inStock, isNew, isHot } = req.body;
 
@@ -92,7 +61,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       description,
       price: parseInt(price) || 0,
       category: category || 'phu-kien',
-      image: req.file ? `/uploads/products/${req.file.filename}` : '',
+      image: req.file ? req.file.path : '',
       size: size || '',
       material: material || 'Len cotton',
       tags: tags ? tags.split(',').map(t => t.trim()) : [],
@@ -110,7 +79,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
 });
 
 // PUT /api/products/:id - Admin
-router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
+router.put('/:id', authMiddleware, uploadProduct.single('image'), async (req, res) => {
   try {
     const { name, description, price, category, size, material, tags, inStock, isNew, isHot, hidden } = req.body;
     
@@ -132,7 +101,7 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
     Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
 
     if (req.file) {
-      updateData.image = `/uploads/products/${req.file.filename}`;
+      updateData.image = req.file.path;
     }
 
     const updated = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
