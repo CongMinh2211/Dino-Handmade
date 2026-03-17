@@ -40,7 +40,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const { category, search } = req.query;
-    let query = { hidden: false };
+    let query = { hidden: { $ne: true } };
 
     if (category && category !== 'all') {
       query.category = category;

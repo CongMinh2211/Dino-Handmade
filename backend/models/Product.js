@@ -12,6 +12,7 @@ const productSchema = new mongoose.Schema({
   inStock: { type: Boolean, default: true },
   isNew: { type: Boolean, default: false },
   isHot: { type: Boolean, default: false },
+  hidden: { type: Boolean, default: false },
 }, { 
   timestamps: true,
   toJSON: { virtuals: true },
