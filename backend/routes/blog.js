@@ -16,8 +16,18 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/blog - Admin
-router.post('/', authMiddleware, uploadBlog.single('image'), async (req, res) => {
+router.post('/', authMiddleware, (req, res, next) => {
+  console.log('🚀 POST /api/blog - Bắt đầu xử lý upload...');
+  uploadBlog.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('❌ Lỗi Multer/Cloudinary (Blog):', err);
+      return res.status(400).json({ error: 'Lỗi tải ảnh lên Cloudinary: ' + err.message });
+    }
+    next();
+  });
+}, async (req, res) => {
   try {
+    console.log('✅ Upload thành công. File info:', req.file ? req.file.path : 'No file');
     const { title, content, excerpt } = req.body;
 
     const newPost = new Blog({
@@ -28,9 +38,11 @@ router.post('/', authMiddleware, uploadBlog.single('image'), async (req, res) =>
     });
 
     await newPost.save();
+    console.log('✨ Đã lưu bài viết mới:', newPost.title);
     res.status(201).json(newPost);
   } catch (err) {
-    res.status(500).json({ error: 'Không thể tạo bài viết' });
+    console.error('❌ Lỗi khi tạo bài viết:', err);
+    res.status(500).json({ error: 'Không thể tạo bài viết: ' + err.message });
   }
 });
 

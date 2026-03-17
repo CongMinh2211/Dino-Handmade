@@ -16,8 +16,18 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/gallery - Admin
-router.post('/', authMiddleware, uploadGallery.single('image'), async (req, res) => {
+router.post('/', authMiddleware, (req, res, next) => {
+  console.log('🚀 POST /api/gallery - Bắt đầu xử lý upload...');
+  uploadGallery.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('❌ Lỗi Multer/Cloudinary (Gallery):', err);
+      return res.status(400).json({ error: 'Lỗi tải ảnh lên Cloudinary: ' + err.message });
+    }
+    next();
+  });
+}, async (req, res) => {
   try {
+    console.log('✅ Upload thành công. File info:', req.file ? req.file.path : 'No file');
     const { title, description, tags } = req.body;
     
     if (!req.file) {
@@ -32,9 +42,11 @@ router.post('/', authMiddleware, uploadGallery.single('image'), async (req, res)
     });
 
     await newGalleryItem.save();
+    console.log('✨ Đã tải ảnh lên Gallery:', newGalleryItem.title);
     res.status(201).json(newGalleryItem);
   } catch (err) {
-    res.status(500).json({ error: 'Không thể tải ảnh lên' });
+    console.error('❌ Lỗi khi tải ảnh lên Gallery:', err);
+    res.status(500).json({ error: 'Không thể tải ảnh lên: ' + err.message });
   }
 });
 
