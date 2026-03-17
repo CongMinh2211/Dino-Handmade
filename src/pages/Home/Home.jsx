@@ -36,13 +36,15 @@ const Home = () => {
     }
   };
 
-  // Hiển thị 8 sản phẩm mới nhất hoặc nổi bật nhất
-  const featuredProducts = products
+  // Lấy danh sách 8 sản phẩm (ưu tiên isHot, isNew, và sản phẩm mới nhất)
+  const featuredProducts = [...products]
     .sort((a, b) => {
       const aFeatured = a.isHot || a.isNew ? 1 : 0;
       const bFeatured = b.isHot || b.isNew ? 1 : 0;
-      if (aFeatured !== bFeatured) return bFeatured - aFeatured;
-      return b.id - a.id; // Nếu cùng mức độ nổi bật thì ưu tiên sản phẩm mới thêm (ID lớn hơn)
+      if (aFeatured !== bFeatured) return bFeatured - aFeatured; // Ưu tiên Hot/New lên trước
+      // Nếu trạng thái Hot/New bằng nhau thì xếp sản phẩm có ID cao hơn (mới hơn) lên trước.
+      // Dùng a.id và b.id cẩn thận nếu id là chuỗi ở backend. Ép kiểu number để đảm bảo.
+      return Number(b.id) - Number(a.id);
     })
     .slice(0, 8);
 
