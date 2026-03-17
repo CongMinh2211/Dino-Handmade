@@ -76,8 +76,17 @@ const AdminDashboard = () => {
     setLoading(true);
 
     const formData = new FormData();
-    Object.keys(form).forEach(key => formData.append(key, form[key]));
-    if (imageFile) formData.append('image', imageFile);
+    Object.keys(form).forEach(key => {
+      // Don't append empty values for non-required text fields if they aren't meant to be strings (like tags which we split)
+      if (form[key] !== undefined && form[key] !== null) {
+        formData.append(key, form[key]);
+      }
+    });
+    
+    // Explicitly append the image file
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
 
     try {
       const url = editingProduct
@@ -86,15 +95,22 @@ const AdminDashboard = () => {
       
       const res = await fetch(url, {
         method: editingProduct ? 'PUT' : 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }, // Note: DO NOT set Content-Type to multipart/form-data here, browser does it automatically with boundary
         body: formData,
       });
 
       if (res.ok) {
         fetchProducts();
         resetForm();
+      } else {
+        const err = await res.json();
+        console.error('Lỗi khi lưu sản phẩm:', err);
+        alert(err.error || 'Có lỗi xảy ra khi lưu sản phẩm');
       }
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+      console.error('Net error:', e); 
+      alert('Lỗi kết nối. Vui lòng thử lại.');
+    }
     setLoading(false);
   };
 
