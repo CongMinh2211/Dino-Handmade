@@ -49,6 +49,15 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', name: 'Dino Handmade API' });
 });
 
+// Xử lý lỗi tập trung
+app.use((err, req, res, next) => {
+  console.error('❌ Server Error:', err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Lỗi server nội bộ',
+    code: err.code || 'INTERNAL_ERROR'
+  });
+});
+
 // Catch-all route: Chuyển hướng mọi request không thuộc API về React App (hỗ trợ React Router)
 app.get('*', (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));

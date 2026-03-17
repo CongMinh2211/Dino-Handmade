@@ -52,8 +52,18 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/products - Admin
-router.post('/', authMiddleware, uploadProduct.single('image'), async (req, res) => {
+router.post('/', authMiddleware, (req, res, next) => {
+  console.log('🚀 POST /api/products - Bắt đầu xử lý upload...');
+  uploadProduct.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('❌ Lỗi Multer/Cloudinary (POST):', err);
+      return res.status(400).json({ error: 'Lỗi tải ảnh lên Cloudinary: ' + err.message });
+    }
+    next();
+  });
+}, async (req, res) => {
   try {
+    console.log('✅ Upload thành công. File info:', req.file ? req.file.path : 'No file');
     const { name, description, price, category, size, material, tags, inStock, isNew, isHot } = req.body;
 
     const newProduct = new Product({
@@ -65,22 +75,34 @@ router.post('/', authMiddleware, uploadProduct.single('image'), async (req, res)
       size: size || '',
       material: material || 'Len cotton',
       tags: tags ? tags.split(',').map(t => t.trim()) : [],
-      inStock: inStock === 'true',
-      isNew: isNew === 'true',
-      isHot: isHot === 'true',
+      inStock: inStock === 'true' || inStock === true,
+      isNew: isNew === 'true' || isNew === true,
+      isHot: isHot === 'true' || isHot === true,
       hidden: false
     });
 
     await newProduct.save();
+    console.log('✨ Đã lưu sản phẩm mới vào DB:', newProduct.name);
     res.status(201).json(newProduct);
   } catch (err) {
-    res.status(500).json({ error: 'Không thể tạo sản phẩm' });
+    console.error('❌ Lỗi khi lưu sản phẩm (POST):', err);
+    res.status(500).json({ error: 'Không thể tạo sản phẩm: ' + err.message });
   }
 });
 
 // PUT /api/products/:id - Admin
-router.put('/:id', authMiddleware, uploadProduct.single('image'), async (req, res) => {
+router.put('/:id', authMiddleware, (req, res, next) => {
+  console.log('🚀 PUT /api/products/' + req.params.id + ' - Bắt đầu xử lý upload...');
+  uploadProduct.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('❌ Lỗi Multer/Cloudinary (PUT):', err);
+      return res.status(400).json({ error: 'Lỗi tải ảnh lên Cloudinary: ' + err.message });
+    }
+    next();
+  });
+}, async (req, res) => {
   try {
+    console.log('✅ Upload thành công. File info:', req.file ? req.file.path : 'No file');
     const { name, description, price, category, size, material, tags, inStock, isNew, isHot, hidden } = req.body;
     
     let updateData = {
@@ -90,11 +112,11 @@ router.put('/:id', authMiddleware, uploadProduct.single('image'), async (req, re
       category,
       size,
       material,
-      tags: tags ? tags.split(',').map(t => t.trim()) : undefined,
-      inStock: inStock !== undefined ? inStock === 'true' : undefined,
-      isNew: isNew !== undefined ? isNew === 'true' : undefined,
-      isHot: isHot !== undefined ? isHot === 'true' : undefined,
-      hidden: hidden !== undefined ? hidden === 'true' : undefined,
+      tags: tags ? (typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags) : undefined,
+      inStock: inStock !== undefined ? (inStock === 'true' || inStock === true) : undefined,
+      isNew: isNew !== undefined ? (isNew === 'true' || isNew === true) : undefined,
+      isHot: isHot !== undefined ? (isHot === 'true' || isHot === true) : undefined,
+      hidden: hidden !== undefined ? (hidden === 'true' || hidden === true) : undefined,
     };
 
     // Remove undefined fields
@@ -105,11 +127,16 @@ router.put('/:id', authMiddleware, uploadProduct.single('image'), async (req, re
     }
 
     const updated = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
-    if (!updated) return res.status(404).json({ error: 'Không tìm thấy sản phẩm' });
+    if (!updated) {
+      console.log('⚠️ Không tìm thấy sản phẩm để cập nhật:', req.params.id);
+      return res.status(404).json({ error: 'Không tìm thấy sản phẩm' });
+    }
     
+    console.log('✨ Đã cập nhật sản phẩm:', updated.name);
     res.json(updated);
   } catch (err) {
-    res.status(500).json({ error: 'Không thể cập nhật sản phẩm' });
+    console.error('❌ Lỗi khi cập nhật sản phẩm (PUT):', err);
+    res.status(500).json({ error: 'Không thể cập nhật sản phẩm: ' + err.message });
   }
 });
 
