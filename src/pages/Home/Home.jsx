@@ -36,7 +36,15 @@ const Home = () => {
     }
   };
 
-  const featuredProducts = products.filter((p) => p.isHot || p.isNew).slice(0, 4);
+  // Hiển thị 8 sản phẩm mới nhất hoặc nổi bật nhất
+  const featuredProducts = products
+    .sort((a, b) => {
+      const aFeatured = a.isHot || a.isNew ? 1 : 0;
+      const bFeatured = b.isHot || b.isNew ? 1 : 0;
+      if (aFeatured !== bFeatured) return bFeatured - aFeatured;
+      return b.id - a.id; // Nếu cùng mức độ nổi bật thì ưu tiên sản phẩm mới thêm (ID lớn hơn)
+    })
+    .slice(0, 8);
 
   return (
     <div className="home">
